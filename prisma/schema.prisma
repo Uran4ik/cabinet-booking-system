@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url удален - теперь только в prisma.config.ts
+}
+
+model User {
+  id            String              @id @default(cuid())
+  email         String              @unique
+  name          String?
+  password      String
+  role          String              @default("teacher")
+  createdAt     DateTime            @default(now())
+  bookings      Booking[]           @relation("Booker")
+  participantIn BookingParticipant[]
+}
+
+model Room {
+  id            String    @id @default(cuid())
+  name          String
+  capacity      Int
+  description   String?
+  floor         Int?
+  hasProjector  Boolean   @default(false)
+  hasComputers  Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  bookings      Booking[]
+}
+
+model Booking {
+  id            String              @id @default(cuid())
+  roomId        String
+  room          Room                @relation(fields: [roomId], references: [id])
+  userId        String
+  user          User                @relation("Booker", fields: [userId], references: [id])
+  date          DateTime
+  lessonNumber  Int
+  startTime     DateTime
+  endTime       DateTime
+  subject       String?
+  classGroup    String?
+  createdAt     DateTime            @default(now())
+  participants  BookingParticipant[]
+  
+  @@unique([roomId, date, lessonNumber])
+  @@map("bookings")
+}
+
+model BookingParticipant {
+  id        String  @id @default(cuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  
+  @@unique([bookingId, userId])
+  @@map("booking_participants")
+}

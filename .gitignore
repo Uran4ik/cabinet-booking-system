@@ -1,0 +1,32 @@
+# Зависимости
+node_modules/
+npm-debug.log*
+
+# Переменные окружения
+.env
+.env.local
+.env.*.local
+
+# База данных
+*.db
+*.db-journal
+
+# Prisma
+prisma/migrations/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Логи
+*.log
+logs/
+
+# Сгенерированные файлы
+src/generated/
+dist/
+build/
